@@ -1,0 +1,11 @@
+# fetched connectome + heavy binaries — NOT in the repo (clone-and-go; see docs/transplant.md §fetch)
+data/*.npz
+data/*.feather
+data/*png
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+# OS
+.DS_Store

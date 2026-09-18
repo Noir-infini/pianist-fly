@@ -1,0 +1,12 @@
+# One-line honesty: what each file needs, nothing more, nothing invented.
+#   native_brain.py              -> numpy, pandas, pyarrow
+#   malecns_driver.py            -> numpy, pandas, pyarrow
+#   train_leg_readout.py         -> numpy, pandas, pyarrow
+#   leg_ik.py, stand_native_4legs.py, native_press.py, play_piano.py
+#                                -> numpy, mujoco, mirror(->flybody/dm_control)
+numpy>=2.4
+pandas>=3.0
+pyarrow>=17.0
+mujoco>=3.1
+dm_control>=1.0
+flybody>=1.0
