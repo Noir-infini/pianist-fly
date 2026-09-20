@@ -23,7 +23,8 @@ https://github.com/user-attachments/assets/69a055f9-12fc-4785-a6fd-5a18b2a301cd
 
 **Key strikes** — the fly reaching for invisible sugar on the keyboard.
 
-https://github.com/user-attachments/assets/27a32be4-1b27-408e-ab9b-f4ad74185bba
+https://github.com/user-attachments/assets/b2f60532-bbd5-4e43-bc9c-c196fea15598
+
 ---
 
 ## System Architecture
