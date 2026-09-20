@@ -1,0 +1,42 @@
+# Clementi — Sonatina Op.36 No.1, mvt I "Spiritoso" (opening theme)
+# Transcribed from Mutopia (public domain; Schirmer Sonatina Album 1893 ed.),
+# right-hand melody, bars 1-6 — the famous C-major opening phrase.
+# Written ONE OCTAVE DOWN: the printed RH (C5..G6) tops out above the fly's C6,
+# so every note is played an octave lower (C4..G5) with the melody unchanged.
+# Stops at bar 6 on purpose: bar 7 introduces F# (the fly's 15 naturals have no
+# accidentals), so the file ends cleanly at the last all-natural bar.
+# ticks: 1 = an eighth note, 2 = a quarter note (2/2, Allegro spiritoso).
+C4 2
+E4 1
+C4 1
+G4 2
+G4 2
+C4 2
+E4 1
+C4 1
+G4 2
+G5 2
+F5 1
+E5 1
+D5 1
+C5 1
+B4 1
+C5 1
+B4 1
+C5 1
+D5 1
+C5 1
+B4 1
+A4 1
+G4 2
+C4 2
+E4 1
+C4 1
+G4 2
+G4 2
+E5 2
+G5 1
+E5 1
+C5 2
+E5 1
+C5 1

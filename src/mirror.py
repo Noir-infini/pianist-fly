@@ -17,9 +17,10 @@ for manual testing; bridge resumes after 5s idle. Auto-resets on fall.
 import os
 import sys
 
+# NOTE (pianist-fly): we keep only fruitfly + TemplateTask + floors; the
+# `walk_imitation` import chain drags in h5py/mediapy (-> jax), so it's dropped.
 import numpy as np
 
-from flybody.fly_envs import walk_imitation
 from dm_control import composer
 from dm_control.locomotion.arenas import floors
 from flybody.fruitfly import fruitfly
@@ -65,7 +66,8 @@ class PianoArena(floors.Floor):
         super()._build()
         import json as _json
         mjcf = self.mjcf_model
-        kp = _json.load(open(os.path.join(PIANO_DIR, "key_positions.json")))
+        with open(os.path.join(PIANO_DIR, "key_positions.json")) as _f:
+            kp = _json.load(_f)
         for stem, rgba in (("base", "0.38 0.38 0.42 1"),
                            ("white", "0.95 0.95 0.95 1"),
                            ("black", "0.09 0.09 0.09 1")):
@@ -78,16 +80,15 @@ class PianoArena(floors.Floor):
             cx, cy = key["center_xyz"][0], key["center_xyz"][1]
             top = key["key_top_z"]
             rgba = "0.95 0.95 0.95 1" if key["color"] == "white" else "0.05 0.05 0.05 1"
-            # half_width/depth are the y/x half-extents (keytops pitch/depth).
-            # Box top sits 0.5 mm ABOVE the mesh key top: avoids z-fighting with
-            # the coplanar mesh face, stays inside the sensor window.
+            # half_width/depth = y/x half-extents; box top 0.5 mm ABOVE the
+            # mesh key top (avoids z-fighting, stays inside the sensor window).
             mjcf.worldbody.add(
                 "geom", name="piano_key_%02d" % i, type="box",
                 size=(key["half_depth"], key["half_width"], KEY_BOX_HALF),
                 pos=(cx, cy, top - KEY_BOX_HALF + 0.0005),
                 rgba=rgba, contype=1, conaffinity=1)
         # The base slab must be PHYSICAL (contype=1): otherwise claws that miss
-        # a key fall straight through the desk visual and end up on the floor.
+        # a key fall through the desk visual onto the floor.
         bx = kp["keybed"]["base_x"]           # x[0.095, 0.280]
         slab_cx = (bx[0] + bx[1]) / 2.0
         mjcf.worldbody.add(
@@ -200,7 +201,8 @@ def piano_pressed(model, data):
     global _PRESS_KEYS
     if _PRESS_KEYS is None:
         import json as _json
-        kp = _json.load(open(os.path.join(PIANO_DIR, "key_positions.json")))
+        with open(os.path.join(PIANO_DIR, "key_positions.json")) as _f:
+            kp = _json.load(_f)
         _PRESS_KEYS = kp["keys"]
     import mujoco
     raw = getattr(model, "_model", model)
@@ -223,10 +225,9 @@ def piano_pressed(model, data):
     return ret
 
 
-# Root-travel calibration. The flybody MuJoCo model is NOT life size: its thorax
-# collision semi-axis is ~4.4 cm and the body is ~20 cm long, i.e. ~40-80x a real
-# 2.5 mm fly. Speeds are therefore in model metres. 0.25 m/s ~= 1.3 body-lengths/s
-# (a real fly walks ~8), which reads as a clear walk without looking silly.
+# Root-travel calibration. The flybody model is NOT life size: thorax ~4.4 cm,
+# body ~20 cm (~40-80x a real fly), so speeds are in model metres — 0.25 m/s
+# ~= 1.3 body-lengths/s reads as a clear walk.
 WALK_SPEED = float(os.environ.get("FLY_WALK_SPEED", "0.25"))  # m/s at full drive
 TURN_RATE = float(os.environ.get("FLY_TURN_RATE", "1.8"))     # rad/s at full L/R imbalance
 TAKEOFF_LIFT = 0.008  # hover height while behavior == 'fly'
@@ -382,18 +383,18 @@ def run_live():
     env = build_free_floor_env()  # flat floor, root travels
     env.reset()
     import math as _math
-    # Let the fly settle onto its feet first. The reset pose is the spawn height
-    # (~0.128 m), which leaves the feet ~5 cm above the floor; if we pin the root
-    # there the fly hovers while the legs dangle ("dead fly"). The settled height
-    # is the actual standing height (~0.078 m).
+    # Let the fly settle onto its feet first: the reset pose leaves the feet
+    # ~5 cm above the floor, and pinning there would hover a "dead fly".
+    # The settled height is the real standing height (~0.078 m).
     for _ in range(60):
         env.step(np.full(59, 0.5, dtype=np.float64))
     base_z = float(env.physics.data.qpos[2])
     print(f"standing height: {base_z:.4f} m", flush=True)
     pos = {"x": 0.0, "y": 0.0, "yaw": 0.0}
-    # IPC path — fly.sh exports FLY_CMD into $XDG_RUNTIME_DIR/fly/;
-    # fallback to /tmp/ for manual invocation without fly.sh.
-    cmd_path = os.environ.get("FLY_CMD", "/tmp/dance_cmd.json")
+    # IPC path — pianist.sh exports FLY_CMD into $XDG_RUNTIME_DIR/fly/;
+    import tempfile
+    cmd_path = os.environ.get("FLY_CMD", os.path.join(tempfile.gettempdir(), "dance_cmd.json"))
+
     # NOTE: do NOT delete a pre-existing cmd file here: staleness is guarded
     # by mtime (<3s) in poll_bridge, and deleting races headless/fast loops.
     smooth = {"walkL": 0.0, "walkR": 0.0, "startle": 0.0,

@@ -1,0 +1,48 @@
+# Ode to Joy — Beethoven, Symphony No. 9 (C major, naturals only, C4..G4)
+# A-B form. ticks: 1 = a beat, 2 = held (the bar-end half notes).
+# Phrase A:
+E4 1
+E4 1
+F4 1
+G4 1
+G4 1
+F4 1
+E4 1
+D4 1
+C4 1
+C4 1
+D4 1
+E4 1
+E4 1
+D4 1
+D4 2
+# Phrase B:
+D4 1
+D4 1
+E4 1
+C4 1
+D4 1
+E4 1
+F4 1
+E4 1
+C4 1
+D4 1
+E4 1
+F4 1
+E4 1
+D4 1
+C4 1
+D4 1
+G4 1
+F4 1
+E4 1
+F4 1
+E4 1
+D4 1
+C4 1
+D4 1
+E4 1
+D4 1
+C4 1
+D4 1
+C4 2

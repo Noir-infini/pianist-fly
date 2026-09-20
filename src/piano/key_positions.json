@@ -1,0 +1,353 @@
+{
+  "source": "midikeyboard.obj (desk copy)",
+  "transform": {
+    "map": "mx=-bz my=+bx mz=+by",
+    "translate": [
+      0.2336,
+      0.0,
+      -0.9868
+    ]
+  },
+  "keybed": {
+    "near_x": 0.0893,
+    "far_x": 0.1822,
+    "y": [
+      -0.1468,
+      0.1466
+    ],
+    "white_top_z": 0.0304,
+    "black_top_z": 0.0364,
+    "white_key_half_width": 0.00978,
+    "base_x": [
+      0.095,
+      0.28
+    ]
+  },
+  "keys": [
+    {
+      "note": "C4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.137,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "C#4",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        -0.1272,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "D4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.1174,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "D#4",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        -0.1077,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "E4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0979,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "F4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0783,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "F#4",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        -0.0686,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "G4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0588,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "G#4",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        -0.049,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "A4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0392,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "A#4",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        -0.0294,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "B4",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0197,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "C5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        -0.0001,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "C#5",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        0.0097,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "D5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.0195,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "D#5",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        0.0292,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "E5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.039,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "F5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.0586,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "F#5",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        0.0683,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "G5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.0781,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "G#5",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        0.0879,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "A5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.0977,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "A#5",
+      "object": "Black_keys_Cube",
+      "color": "black",
+      "center_xyz": [
+        0.1493,
+        0.1075,
+        0.0364
+      ],
+      "half_width": 0.0055,
+      "half_depth": 0.0326,
+      "key_top_z": 0.0364
+    },
+    {
+      "note": "B5",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.1172,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    },
+    {
+      "note": "C6",
+      "object": "White_keys_Cube.009",
+      "color": "white",
+      "center_xyz": [
+        0.1358,
+        0.1368,
+        0.0304
+      ],
+      "half_width": 0.00978,
+      "half_depth": 0.0464,
+      "key_top_z": 0.0304
+    }
+  ]
+}

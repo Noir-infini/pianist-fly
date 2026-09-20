@@ -1,12 +1,9 @@
-# One-line honesty: what each file needs, nothing more, nothing invented.
-#   native_brain.py              -> numpy, pandas, pyarrow
-#   malecns_driver.py            -> numpy, pandas, pyarrow
-#   train_leg_readout.py         -> numpy, pandas, pyarrow
-#   leg_ik.py, stand_native_4legs.py, native_press.py, play_piano.py
-#                                -> numpy, mujoco, mirror(->flybody/dm_control)
-numpy>=2.4
-pandas>=3.0
+numpy>=2.1
+pandas>=2.2
 pyarrow>=17.0
-mujoco>=3.1
-dm_control>=1.0
-flybody>=1.0
+mujoco>=3.1.4
+dm_control>=1.0.24
+# flybody (the MuJoCo fruit-fly body model) is NOT here: its upstream metadata
+# pins numpy==1.26.4, which conflicts with the >=2.1 stack above (and which we
+# run against fine). setup.sh installs it separately with --no-deps:
+#   pip install --no-deps "flybody @ git+https://github.com/TuragaLab/flybody.git"

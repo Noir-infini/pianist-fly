@@ -23,9 +23,10 @@ def _key(j):
     if _KEYSPECS is None:
         import json
         import os
-        _KEYSPECS = json.load(open(os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "piano", "key_positions.json")))["keys"]
+        with open(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "piano", "key_positions.json")) as _f:
+            _KEYSPECS = json.load(_f)["keys"]
     return _KEYSPECS[j]
 
 
