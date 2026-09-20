@@ -5,11 +5,14 @@ all 6 claw sites level to within ~2 mm). All 4 foreleg claws are released and
 the femur + coxa actuators are driven directly from the connectome's own vnc_motor
 pool firing rates — no trained decoder, no ridge regression.
 
-Motor pool rates come from `malecns_driver.py --native-4legs`, which injects:
-  1. Proportional sugar reward — sugar cell drive scales up with total motor firing
-     (more movement → more reward → more movement: positive feedback loop)
+Motor pool rates come from our own `brain_driver.py` (no doom, no malecns
+driver), which injects:
+  1. Scent command channel (FLY_CMD) + seeded sugar pulses into the antenna —
+     the fly's nose — plus the `predicted` sugar-reward coupling
+     (tarsal/efference gain scaled by reward_level), so scent measurably
+     raises the motor-pool drive (M5 gate, scripts/scent_ab.py)
   2. Full optic-flow visual input
-  3. Proportional tarsal sensory un-gating — gain scales with movement level
+  3. Tarsal sensory un-gating via the vnc_sensory channel (the fly stands)
 
 The rate→leg formula (identical to stand_wave.py's proven coxa+femur combo):
   frac = clip((rate - RATE_FLOOR) / RATE_SPAN, 0, 1)
@@ -34,11 +37,11 @@ from pathlib import Path
 
 import numpy as np
 import mujoco
-
-sys.path.insert(0, "/home/noirinfini/fly")
 import mirror  # noqa: E402  (build_free_floor_env, _setup_camera)
 
-ACT = Path(os.environ.get("FLY_ACTIVITY", "/tmp/malecns_activity.json"))
+import tempfile
+
+ACT = Path(os.environ.get("FLY_ACTIVITY", os.path.join(tempfile.gettempdir(), "malecns_activity.json")))
 HEADLESS = bool(os.environ.get("FLY_WAVE_HEADLESS"))
 MAX_S = float(os.environ.get("FLY_WAVE_SECONDS", "0")) or None
 TAU_S = 0.10         # first-order EMA smoothing (fast, percussive)

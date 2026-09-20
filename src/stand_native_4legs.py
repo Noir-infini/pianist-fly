@@ -34,11 +34,10 @@ from pathlib import Path
 
 import numpy as np
 import mujoco
-
-sys.path.insert(0, "/home/noirinfini/fly")
+import tempfile
 import mirror  # noqa: E402  (build_free_floor_env, _setup_camera)
 
-ACT = Path(os.environ.get("FLY_ACTIVITY", "/tmp/malecns_activity.json"))
+ACT = Path(os.environ.get("FLY_ACTIVITY", os.path.join(tempfile.gettempdir(), "malecns_activity.json")))
 HEADLESS = bool(os.environ.get("FLY_WAVE_HEADLESS"))
 MAX_S = float(os.environ.get("FLY_WAVE_SECONDS", "0")) or None
 TAU_S = 0.10         # first-order EMA smoothing (fast, percussive)

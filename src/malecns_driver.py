@@ -27,66 +27,54 @@ from pathlib import Path
 
 import pandas as pd
 
-# One BLAS thread. The per-tick readout dots are tiny, but OpenBLAS spin-waits
-# its whole thread pool after every call: the driver showed 16 threads / ~500%
-# CPU (~4 cores burned doing nothing) and froze screen recording. Set BEFORE
-# numpy is imported; one thread is instant at these sizes.
+# One BLAS thread: OpenBLAS spin-waits its whole pool on every dot call (16
+# threads / ~500% CPU, froze screen recording). Set BEFORE numpy import.
 for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS",
            "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"):
     os.environ.setdefault(_v, "1")
 
 import numpy as np
 
-ROOT = Path("/home/noirinfini/doomfly")
-sys.path.insert(0, str(ROOT))
-from native_brain import NativeBrain  # doom-free, ours (§NativeBrain)
+ROOT = Path(__file__).resolve().parent.parent
+from native_brain import NativeBrain  # ours (§NativeBrain)
 
-# IPC paths — fly.sh exports FLY_CMD / FLY_ACTIVITY into $XDG_RUNTIME_DIR/fly/
-# (user-private, mode 700). Fallback to /tmp so the script still works when
-# invoked manually without fly.sh (e.g. --max-ticks smoke test).
-CMD = os.environ.get("FLY_CMD",      "/tmp/dance_cmd.json")
-ACT = os.environ.get("FLY_ACTIVITY", "/tmp/malecns_activity.json")
-READOUT = "/home/noirinfini/fly/data/leg_readout.npz"
-RECOG = "/home/noirinfini/fly/data/recognize.npz"
-PIANO = "/home/noirinfini/fly/data/piano_v2.npz"
-FEATHER = "/home/noirinfini/fly/data/mcns_annotations.feather"
+import tempfile
+
+# IPC paths — pianist.sh exports FLY_CMD / FLY_ACTIVITY into $XDG_RUNTIME_DIR/fly/
+# (user-private, mode 700). Fallback to temp directory so the script still works when
+# invoked manually without pianist.sh (e.g. --max-ticks smoke test).
+CMD = os.environ.get("FLY_CMD",      os.path.join(tempfile.gettempdir(), "dance_cmd.json"))
+ACT = os.environ.get("FLY_ACTIVITY", os.path.join(tempfile.gettempdir(), "malecns_activity.json"))
 # Visual-position stimuli (must match train_recognize.py POSITIONS).
 RECOG_POS = {"left": (0.15, 0.5), "right": (0.85, 0.5),
              "top": (0.5, 0.15), "bottom": (0.5, 0.85)}
-# Piano classes -> MIDI note names (pentatonic: C D E G A, + octave C6).
-# C6 is the only one on the keybed's positive-y (T1_left) half — the C4..C5
-# block is all negative-y (T1_right), per key_positions.json.
+# Piano classes -> MIDI note names (pentatonic C D E G A, + octave C6).
+# C6 is the only key on the keybed's positive-y (T1_left) half — C4..C5 block
+# is all negative-y (T1_right), per key_positions.json.
 PIANO_KEY_NOTE = {"key0_C": "C4", "key1_D": "D4", "key2_E": "E4",
                   "key3_G": "G4", "key4_A": "A4", "key5_C2": "C6"}
-# Intended-note loop (pentatonic, up and back down) — the "score" the brain
-# is asked to play. Blob is presented at each key's retinal position.
+# Intended-note loop (pentatonic, up and down) — the "score" the brain plays.
 PIANO_SONG = ["key0_C", "key1_D", "key2_E", "key3_G", "key4_A",
               "key5_C2", "key4_A", "key3_G", "key2_E", "key1_D"]
-# DN left/right prior blend strength (log-domain). A/B (2026-09-18, task2.md):
-# alpha=0.25 gave no measurable benefit (0.867 vs 0.882, n=15/17) — LEFT AT 0
-# (no prior) by default; the mechanism stays behind --piano-alpha.
+# DN left/right prior blend (log-domain). A/B (2026-09-18, task2.md):
+# alpha=0.25 gave no measurable benefit (0.867 vs 0.882, n=15/17) — left at 0.
 DN_ALPHA = 0.0
 DN_PRIOR_BETA = 1.6        # prior sharpness (logit slope across the 6 keys).
-# Reward-gated RPE decoder learning (piano mode). Reward = decision-match only:
-# the fly earns when its decoded note == the intended note. Update once per
-# decision window with a UNIT-norm feature (raw z has ||z||~sqrt(d)~116, an
-# unnormalised step would wreck the ridge in one go). Gate (--rpe-gate):
-#   all      update every window       (only safe at lr <= ~0.003)
-#   errors   update only on misses     (default; inert when always right)
-#   lowconf  update when p(intent) < --rpe-conf
-# Cold = compute but never apply (log for offline replay); warm = apply live
-# + per-epoch recovery toward the saved piano_v2 weights.
+# Reward-gated RPE decoder (piano): reward = decision-match only, updated once
+# per decision window with a UNIT-norm feature (raw z has ||z||~116, a raw step
+# would wreck the ridge). Gate (--rpe-gate):
+#   all | errors (default) | lowconf
+# Cold = compute but never apply; warm = apply live + per-epoch recovery
+# toward the saved piano_v2 weights.
 RPE_LR = 0.03
 RPE_GATE = "errors"
 RPE_CONF = 0.8
-RPE_INIT_DROP = 0.0  # fraction of decoder readout rows zeroed at start: models
-RPE_INIT_SEED = 7    # a "not fully wired" fly so there are mistakes to re-learn
-                     # (multiplicative noise is swamped: the decoder's margins
-                     # are large, so dropout is the honest imperfect init)
+RPE_INIT_DROP = 0.0  # fraction of readout rows zeroed at start: models a
+RPE_INIT_SEED = 7    # "not fully wired" fly so there are mistakes to re-learn
+                     # (dropout is swamped by wide decoder margins)
 RPE_EPOCH = len(PIANO_SONG)   # windows per epoch = one full song pass
 RPE_RECOVER_BETA = 0.5        # pull-back fraction on a worse epoch
-RPE_COLD_DUMP = "/home/noirinfini/fly/data/rpe_cold.npz"
-RPE_WARM_LOG = "/tmp/rpe_warm.tsv"
+RPE_WARM_LOG = os.path.join(tempfile.gettempdir(), "rpe_warm.tsv")
 CUE_BLOCK = (12, 20)          # ticks per presented cue (~3-5 s at ~4 ticks/s)
 LEG_L = {"left": 1.0, "right": 0.0, "top": 1.0, "bottom": 0.0}
 LEG_R = {"left": 0.0, "right": 1.0, "top": 1.0, "bottom": 0.0}
@@ -358,14 +346,12 @@ def main(max_ticks=None, native4=False, piano=False, piano_alpha=DN_ALPHA,
     sugar_rng = np.random.default_rng(SUGAR_SEED)
     sugar_until = 0.0
     sugar_next = float(sugar_rng.uniform(*SUGAR_OFF_S))
-    # Native pools: full 4-leg drive in --native-4legs, and T1L/T1R motor rates
-    # for the piano press envelope in --piano.
+    # Native pools: full 4-leg drive (--native-4legs); T1L/T1R motor rates
+    # for the piano press envelope (--piano).
     n4pools = _load_native4_pools(brain) if (native4 or piano) else None
-    # prev_n4_rates: rates from the PREVIOUS tick used to compute THIS tick's reward.
-    # Starts at zero (no movement yet → base drives only).
+    # Rates from the PREVIOUS tick drive THIS tick's reward; get the LB3c
+    # sugar-cell indices for the proportional sugar drive.
     prev_n4_rates = {"T1L": 0.0, "T1R": 0.0, "T2L": 0.0, "T2R": 0.0}
-    # Pre-build the sugar cell index list (for proportional sugar drive).
-    # brain.sugar is a direct attribute — index array of LB3c sugar cells.
     n4_sugar_idxs = brain.sugar.tolist() if (native4 and hasattr(brain, 'sugar') and brain.sugar is not None) else []
     print(f"malecns driver: {brain.n} neurons, {n} retinal inputs, "
           f"{len(display)} display neurons, {len(group_names)} populations"

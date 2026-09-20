@@ -15,7 +15,7 @@ Re-running with the dataset present re-fits only; pass --retrain to simulate
 again. This is an engineered readout on top of real spikes (fly.md S9). It is
 not biology and involves no plasticity: the connectome weights are frozen.
 
-    cd ~/doomfly && ~/doomfly-env/bin/python ~/fly/train_leg_readout.py
+    .venv/bin/python src/train_leg_readout.py
 """
 import argparse
 import math
@@ -25,12 +25,11 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path("/home/noirinfini/doomfly")
-sys.path.insert(0, str(ROOT))
-from native_brain import NativeBrain  # doom-free, ours (§NativeBrain)  # noqa: E402
+ROOT = Path(__file__).resolve().parent.parent
+DATA = ROOT / "data" / "readout_dataset.npz"
+OUT = ROOT / "data" / "leg_readout.npz"
+from native_brain import NativeBrain  # ours (§NativeBrain)  # noqa: E402
 
-DATA = Path("/home/noirinfini/fly/data/leg_readout_dataset.npz")
-OUT = Path("/home/noirinfini/fly/data/leg_readout.npz")
 
 TICK_MS = 28.6                      # driver tick length
 N_TICKS = 2000                      # ~8 min at ~230 ms/tick
@@ -203,7 +202,7 @@ def main():
         print(f"loaded dataset {args.data}  ({rates.shape[0]} ticks, "
               f"{rates.shape[1]} cells)", flush=True)
     else:
-        brain = NativeBrain(ROOT / "outputs/doom/malecns_v1/graph.npz")
+        brain = NativeBrain(ROOT / "data" / "graph.npz")
         pop, pop_ids, rates, sugar = record(brain, args.ticks)
         np.savez(args.data, pop=pop.astype(np.int32), pop_ids=pop_ids,
                  rates=rates, sugar=sugar,
