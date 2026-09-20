@@ -18,13 +18,13 @@ The simulation operates as a closed loop between sensory chemistry, biological c
 ## Demo
 
 <figure>
-  <img src="https://github.com/Noir-infini/pianist-fly/raw/main/video/brain.mp4" alt="Live brain window" style="max-width:100%">
-  <figcaption><b>Live brain window</b> — the 141k-neuron 3D window firing while the fly hunts for sugar.</figcaption>
+  <video src="https://github.com/Noir-infini/pianist-fly/releases/download/demo-assets/brain.mp4" controls muted loop style="max-width:100%"></video>
+  <figcaption><b>Live brain window</b> — the 141k-neuron 3D window firing while the fly hunts for sugar. <a href="https://github.com/Noir-infini/pianist-fly/blob/main/video/brain.mp4">(also in-repo)</a></figcaption>
 </figure>
 
 <figure>
-  <img src="https://github.com/Noir-infini/pianist-fly/raw/main/video/playing.mp4" alt="Key strikes" style="max-width:100%">
-  <figcaption><b>Key strikes</b> — the fly reaching for invisible sugar on the keyboard.</figcaption>
+  <video src="https://github.com/Noir-infini/pianist-fly/releases/download/demo-assets/playing.mp4" controls muted loop style="max-width:100%"></video>
+  <figcaption><b>Key strikes</b> — the fly reaching for invisible sugar on the keyboard. <a href="https://github.com/Noir-infini/pianist-fly/blob/main/video/playing.mp4">(also in-repo)</a></figcaption>
 </figure>
 
 ---
