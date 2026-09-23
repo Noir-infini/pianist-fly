@@ -19,12 +19,11 @@ The simulation operates as a closed loop between sensory chemistry, biological c
 
 **Live brain window** — the 141k-neuron 3D window firing while the fly hunts for sugar.
 
-https://github.com/user-attachments/assets/69a055f9-12fc-4785-a6fd-5a18b2a301cd
+https://github.com/user-attachments/assets/b2f60532-bbd5-4e43-bc9c-c196fea15598
 
 **Key strikes** — the fly reaching for invisible sugar on the keyboard.
 
-https://github.com/user-attachments/assets/b2f60532-bbd5-4e43-bc9c-c196fea15598
-
+https://github.com/user-attachments/assets/69a055f9-12fc-4785-a6fd-5a18b2a301cd
 ---
 
 ## System Architecture
