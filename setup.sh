@@ -7,8 +7,10 @@
 # repo. The 3D brain window (~/gnat, a separate Rust app) is OPTIONAL and only
 # verified here — the fly + piano always run without it.
 #
-# Failure policy: the ONLY hard stop is a corrupted/missing feather (poisoned
-# mirror protection). Every other check warns and continues.
+# Failure policy: the ONLY hard stops are a corrupted/missing feather (poisoned
+# mirror protection) and the absence of a usable Python <= 3.12 (without it the
+# package install cannot succeed — see step 1/7). Everything else warns and
+# continues.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -19,6 +21,35 @@ ACTIVITY="${FLY_ACTIVITY:-$PWD/logs/malecns_activity.json}"
 ok()   { echo "  [OK]   $*"; }
 warn() { echo "  [WARN] $*"; }
 
+# Python <= 3.12 is required: dm_control's hard dependency `labmaze` ships no
+# wheels for 3.13+ (pip would try a bazel source build and fail), and this
+# project's stack runs on the (3,12)-or-earlier interpreters we support.
+PY_VERSION_MAX="3.12"
+export PY_VERSION_MAX
+
+python_ok() {
+  # $1 = interpreter path; true iff $(major, minor) <= PY_VERSION_MAX.
+  "$1" -c 'import os, sys
+mx = tuple(int(x) for x in os.environ["PY_VERSION_MAX"].split("."))
+sys.exit(0 if sys.version_info[:2] <= mx else 1)' 2>/dev/null
+}
+
+find_python() {
+  # $1 = optional explicit interpreter (env override); else scan PATH.
+  if [ -n "$1" ] && python_ok "$1"; then
+    printf '%s' "$1"
+    return 0
+  fi
+  local p
+  for p in python3.12 python3.11 python3.10 python3.9 python3.8 python3 python; do
+    if command -v "$p" >/dev/null 2>&1 && python_ok "$(command -v "$p")"; then
+      printf '%s' "$(command -v "$p")"
+      return 0
+    fi
+  done
+  return 1
+}
+
 echo
 echo "pianist-fly setup"
 echo "  web source of truth: Janelia flyem-male-cns (3 feathers, sha256-pinned)."
@@ -28,10 +59,24 @@ echo
 # 1/7 ── virtualenv ────────────────────────────────────────────────────────────
 echo "== 1/7  setting up .venv =="
 if [ -x "$BF_PY" ]; then
-    ok ".venv already present"
-else
-    python3 -m venv .venv
+    if python_ok "$BF_PY"; then
+        ok ".venv already present"
+    else
+        warn ".venv python is $( "$BF_PY" --version 2>&1 ) — Python 3.13+ has no labmaze/ dm_control wheels"
+        warn "delete .venv and re-run ./setup.sh with Python 3.12 or lower"
+        ok ".venv already present"
+    fi
+elif FOUND_PY="$(find_python "${PYTHON3:-}")"; then
+    echo "  using $( "$FOUND_PY" --version 2>&1 ) at $FOUND_PY"
+    "$FOUND_PY" -m venv .venv
     ok "created .venv"
+else
+    echo "ERROR: Python 3.12 or lower not found." >&2
+    echo "       dm_control depends on labmaze, which ships no prebuilt wheels" >&2
+    echo "       for Python 3.13+ (its source build needs bazel)." >&2
+    echo "       install Python <= 3.12 (e.g. apt/brew/pacman/conda/pyenv), then re-run:" >&2
+    echo "           ./setup.sh" >&2
+    exit 1
 fi
 "$BF_PY" --version
 
