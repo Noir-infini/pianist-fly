@@ -95,6 +95,11 @@ else
     "$BF_PY" -m pip install --progress-bar on --no-deps \
         "flybody @ git+https://github.com/TuragaLab/flybody.git"
 fi
+# flybody's utils.py eagerly imports IPython + matplotlib at module load; we
+# only use its fruit-fly body model, so move those heavy imports into
+# display_video (already done in the dev copy).
+"$BF_PY" scripts/patch_flybody_utils.py || \
+    warn "could not lazy-patch flybody's IPython/matplotlib imports"
 ok "packages installed"
 
 # 3/7 ── connectome feathers ───────────────────────────────────────────────────
