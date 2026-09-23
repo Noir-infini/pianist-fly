@@ -90,6 +90,7 @@ def fetch_one(name: str, info: dict) -> Path:
         local.unlink(missing_ok=True)
     print(f"fetching ({name}) {info['url']}")
     tmp = local.with_suffix(local.suffix + ".partial")
+    tmp.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(
         info["url"], headers={"User-Agent": "pianist-fly-setup/1.0"})
     try:

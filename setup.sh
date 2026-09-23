@@ -101,6 +101,7 @@ ok "packages installed"
 echo
 echo "== 3/7  fetching .feather files (3 files, sha256-pinned, ~1.1 GB once) =="
 echo "       a live download bar prints below; already-verified files are reused."
+mkdir -p data
 "$BF_PY" scripts/fetch_graph.py --no-build
 
 # 4/7 ── compile the graph ─────────────────────────────────────────────────────
